@@ -164,11 +164,6 @@ export default function Register() {
     const file = event.target.files[0];
 
     if (!file) {
-      // No file selected
-      setCredentials({
-        ...credentials,
-        file: previewURL,
-      });
       return;
     }
 
@@ -178,26 +173,13 @@ export default function Register() {
       const image = new Image();
 
       image.onload = () => {
-        let width = image.width;
-        let height = image.height;
-
-        // Resize the image if it exceeds the maximum dimensions
-        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
-          if (width > height) {
-            height *= MAX_DIMENSION / width;
-            width = MAX_DIMENSION;
-          } else {
-            width *= MAX_DIMENSION / height;
-            height = MAX_DIMENSION;
-          }
-        }
-
+        // -----------resize image----------------
+        const aspectRatio = image.width / image.height;
         const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-
+        canvas.width = Math.min(image.width, MAX_DIMENSION);
+        canvas.height = canvas.width / aspectRatio;
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0, width, height);
+        ctx.drawImage(image, 0, 0, image.width, image.height);
 
         canvas.toBlob((blob) => {
           setPreviewURL(canvas.toDataURL("image/jpeg"));
