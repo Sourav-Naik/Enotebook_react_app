@@ -41,6 +41,22 @@ export default function NoteItem() {
 
   return (
     <div className="row">
+      <div className="col-sm-4 p-2">
+        <Link to="/newNote" className="text-decoration-none">
+          <div className="card h-100">
+            <div className="card-body h-100 d-flex flex-column align-items-center justify-content-center">
+              {/* <i class="fa-solid fa-plus fa-2xl" /> */}
+              <p
+                className="m-0 fw-semibold"
+                style={{ fontSize: "50px", lineHeight: "20px" }}
+              >
+                +
+              </p>
+              <p className="m-0 fw-semibold fs-4">Add New Note</p>
+            </div>
+          </div>
+        </Link>
+      </div>
       {userNotesData.map((note) => (
         <div key={note._id} className="col-sm-4 p-2">
           <div className="card h-100">

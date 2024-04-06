@@ -57,11 +57,6 @@ export default function Notes() {
               MyNote
             </Link>
           </li>
-          <li className="nav-item">
-            <Link to="/newNote" className="nav-link text-white px-2">
-              Add Note
-            </Link>
-          </li>
         </ul>
 
         <button

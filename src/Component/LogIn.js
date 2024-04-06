@@ -81,7 +81,7 @@ export default function LogIn() {
         Write And Save Note Online
       </div>
 
-      <section className="mh-100 text-white">
+      <section className="h-100 text-white">
         <div className="container-fluid h-custom border rounded my-4 mh-100">
           <div className="row d-flex justify-content-center align-items-center">
             <div className="col-md-9 col-lg-6 col-xl-5">

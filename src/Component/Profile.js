@@ -175,7 +175,7 @@ export default function Profile() {
   };
 
   return (
-    <section className="position-relative d-flex flex-wrap justify-content-center align-items-center h-100">
+    <section className="position-relative d-flex flex-wrap justify-content-center align-items-center">
       {/*----------------- profile pic------ */}
       <div className="px-4 d-flex">
         <div className="d-inline-flex justify-content-center position-relative">
@@ -211,28 +211,31 @@ export default function Profile() {
       </div>
       {/* form----------------- */}
 
-      <div className="text-white mt-4">
-        <div className=" d-flex align-items-center">
-          <i className="fas fa-user me-3 fa-fw fa-xl" />
-          {editForm ? (
-            <input
-              className="rounded p-0 bg-dark text-white fs-5 mb-1 border px-1"
-              type="text"
-              name="name"
-              value={userName}
-              onChange={onUserChange}
-              disabled={disabled}
-            />
-          ) : (
-            <span className="fs-4">{userName}</span>
-          )}
+      <div className="text-white mt-4 w-100">
+        <div className=" border rounded p-2 mx-1">
+          <div className=" d-flex align-items-center">
+            <i className="fas fa-user me-3 fa-fw fa-xl" />
+            {editForm ? (
+              <input
+                className="rounded p-0 bg-dark text-white fs-5 mb-1 border px-1"
+                type="text"
+                name="name"
+                value={userName}
+                onChange={onUserChange}
+                disabled={disabled}
+              />
+            ) : (
+              <span className="fs-4">{userName}</span>
+            )}
+          </div>
+          <hr className="m-0" />
+          <div className="d-flex align-items-center mt-3 overflow-hidden">
+            <i className="fas fa-envelope me-3 fa-fw fa-xl" />
+            <span className="fs-4">{userEmail}</span>
+          </div>
+          <hr className="mt-0" />
         </div>
-        <hr className="m-0" />
-        <div className="d-flex align-items-center mt-3">
-          <i className="fas fa-envelope me-3 fa-fw fa-xl" />
-          <span className="fs-4">{userEmail}</span>
-        </div>
-        <hr className="mt-0" />
+
         <div className="d-flex justify-content-between mt-3">
           <button
             type="button"
