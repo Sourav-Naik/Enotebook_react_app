@@ -11,7 +11,6 @@ export default function Notes() {
   const [userPic, setUserPic] = useState(null);
   const [userName, setUserName] = useState("User Name");
   const [spinner, setSpinner] = useState(false);
-  const [alert, setAlert] = useState({ type: "", msg: "", display: "none" });
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -25,11 +24,10 @@ export default function Notes() {
 
   const logout = () => {
     setSpinner(true);
-    setAlert({ type: "light", msg: "Logging Out", display: "block" });
-    sessionStorage.setItem("token", "");
-    sessionStorage.setItem("loggedIn", "");
+    navigate("/");
     setTimeout(() => {
-      navigate("/");
+      sessionStorage.setItem("token", "");
+      sessionStorage.setItem("loggedIn", "");
       window.location.reload();
     }, 500);
   };
@@ -83,26 +81,14 @@ export default function Notes() {
           <Route exact path="/newnote" element={<NewNote />} />
         </Routes>
 
-        {alert.display === "block" && (
+        {spinner && (
           <div className=" position-absolute bottom-50 start-0 end-0 d-flex justify-content-center">
             <div
-              className={`d-flex flex-column align-items-center alert alert-${alert.type} mx-4`}
+              className={`d-flex flex-column align-items-center alert alert-light mx-4`}
               role="alert"
             >
-              <div className="fs-4 mb-3 text-center">{alert.msg}</div>
-
-              {spinner ? (
-                <div className="spinner-border text-success" role="status" />
-              ) : (
-                <div className="">
-                  <div
-                    className={`m-4 fa-solid fa-circle-${
-                      alert.type === "success" ? "check" : "xmark"
-                    } fa-2xl text-${alert.type}`}
-                    style={{ fontSize: "50px", cursor: "pointer" }}
-                  />
-                </div>
-              )}
+              <div className="fs-4 mb-3 text-center">Logging Out</div>
+              <div className="spinner-border text-dark" role="status" />
             </div>
           </div>
         )}

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 export default function Login() {
+  const [spinner, setSpinner] = useState(false);
   const handelGoogleLogin = async (response) => {
+    setSpinner(true);
     const password = jwtDecode(response.credential).sub;
     const userEmail = jwtDecode(response.credential).email;
     const userName = jwtDecode(response.credential).name;
@@ -79,13 +81,27 @@ export default function Login() {
   };
 
   return (
-    <GoogleLogin
-      onSuccess={(response) => {
-        handelGoogleLogin(response);
-      }}
-      onError={() => {
-        window.location.reload();
-      }}
-    />
+    <>
+      <GoogleLogin
+        onSuccess={(response) => {
+          handelGoogleLogin(response);
+        }}
+        onError={() => {
+          window.location.reload();
+        }}
+      />
+
+      {spinner && (
+        <div className=" position-absolute bottom-50 start-0 end-0 d-flex justify-content-center">
+          <div
+            className={`d-flex flex-column align-items-center alert alert-success mx-4`}
+            role="alert"
+          >
+            <div className="fs-4 mb-3 text-center">Logging In</div>
+            <div className="spinner-border text-success" role="status" />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
