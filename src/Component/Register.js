@@ -174,12 +174,26 @@ export default function Register() {
 
       image.onload = () => {
         // -----------resize image----------------
-        const aspectRatio = image.width / image.height;
+        let width = image.width;
+        let height = image.height;
+
+        // Resize the image if it exceeds the maximum dimensions
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+          if (width > height) {
+            height *= MAX_DIMENSION / width;
+            width = MAX_DIMENSION;
+          } else {
+            width *= MAX_DIMENSION / height;
+            height = MAX_DIMENSION;
+          }
+        }
+
         const canvas = document.createElement("canvas");
-        canvas.width = Math.min(image.width, MAX_DIMENSION);
-        canvas.height = canvas.width / aspectRatio;
+        canvas.width = width;
+        canvas.height = height;
+
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0, image.width, image.height);
+        ctx.drawImage(image, 0, 0, width, height);
 
         canvas.toBlob((blob) => {
           setPreviewURL(canvas.toDataURL("image/jpeg"));
