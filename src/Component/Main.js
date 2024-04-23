@@ -28,6 +28,8 @@ export default function Notes() {
     setTimeout(() => {
       sessionStorage.setItem("token", "");
       sessionStorage.setItem("loggedIn", "");
+      localStorage.setItem("token", "");
+      localStorage.setItem("loggedIn", "");
       window.location.reload();
     }, 500);
   };

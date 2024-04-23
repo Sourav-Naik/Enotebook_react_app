@@ -2,11 +2,13 @@ import React from "react";
 import NoteContext from "./NoteContext";
 import axios from "axios";
 export default function NoteState(props) {
-  const loginStatus = sessionStorage.getItem("loggedIn");
+  const loginStatus =
+    sessionStorage.getItem("loggedIn") || localStorage.getItem("loggedIn");
 
   // fetch user details and notes
   const userInfo = async () => {
-    let token = sessionStorage.getItem("token");
+    let token =
+      sessionStorage.getItem("token") || localStorage.getItem("token");
     if (token) {
       const headers = { "auth-token": token };
       try {
@@ -26,7 +28,8 @@ export default function NoteState(props) {
   };
 
   const userNotes = async () => {
-    let token = sessionStorage.getItem("token");
+    let token =
+      sessionStorage.getItem("token") || localStorage.getItem("token");
     if (token) {
       const headers = { "auth-token": token };
       try {

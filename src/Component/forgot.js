@@ -1,24 +1,29 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import eNotebook from "../Images/eNotebook.jpg";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import Login from "./GoogleLogin";
-
-export default function LogIn() {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+export default function Forgot() {
+  const [credentials, setCredentials] = useState({ email: "" });
   const [spinner, setSpinner] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [remember, setRemember] = useState(false);
   const [alert, setAlert] = useState({ type: "", msg: "", display: "none" });
+
+  const navigate = useNavigate();
+
   const handelAlert = () => {
+    if (alert.type === "success") {
+      setAlert({
+        type: "success",
+        msg: "Moving to login Page",
+        display: "block",
+      });
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    }
     setAlert({ type: "", msg: "", display: "none" });
     setDisabled(false);
   };
-
-  const onPassChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
-
   const onEmailChange = (e) => {
     setCredentials({
       ...credentials,
@@ -30,56 +35,35 @@ export default function LogIn() {
     e.preventDefault();
     setDisabled(true);
 
-    if (credentials.email.length === 0 || credentials.password.length === 0) {
-      setAlert({
-        type: "danger",
-        msg: "Fill all the credentials",
-        display: "block",
-      });
-      return;
-    }
-
     const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;
     if (!pattern.test(credentials.email)) {
       setAlert({ type: "danger", msg: "Fill Correct Email", display: "block" });
       return;
     }
-
     setSpinner(true);
-    setAlert({ type: "light", msg: "Validating Details", display: "block" });
+    setAlert({ type: "light", msg: "Validating", display: "block" });
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/auth/login`,
+        `http://localhost:5000/api/auth/forgotpassword`,
         credentials,
         {
           headers: { "content-type": "application/json" },
         }
       );
-
-      const result = await response.data;
-      if (result.success === true) {
-        sessionStorage.setItem("token", result.token);
-        sessionStorage.setItem("loggedIn", true);
-        if (remember) {
-          localStorage.setItem("token", result.token);
-          localStorage.setItem("loggedIn", true);
-        }
-        setTimeout(() => {
-          setSpinner(false);
-          setAlert({ type: "success", msg: "Logging In", display: "block" });
-        }, 500);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }
+      setTimeout(() => {
+        setSpinner(false);
+        setAlert({ type: "success", msg: response.data.msg, display: "block" });
+      }, 500);
     } catch (error) {
-      const msg = error.response.data.msg;
       setSpinner(false);
-      setAlert({ type: "danger", msg: msg, display: "block" });
+      setAlert({
+        type: "danger",
+        msg: error.response.data.msg,
+        display: "block",
+      });
     }
   };
-
   return (
     <div className="container">
       <div className="text-white text-center mt-3 border rounded py-3 fs-5 fw-semibold">
@@ -95,13 +79,6 @@ export default function LogIn() {
 
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1 my-4">
               <form className="position-relative">
-                <div className="d-flex align-items-center justify-content-center">
-                  {/* <GoogleLogin /> */}
-                  <Login />
-                </div>
-
-                <p className="text-center fw-semibold my-3 fs-4">Or</p>
-
                 {alert.display === "block" && (
                   <div className="z-2 position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">
                     <div
@@ -129,76 +106,30 @@ export default function LogIn() {
                     </div>
                   </div>
                 )}
-
                 <div className="form-outline d-flex align-items-center">
-                  <i className="fas fa-user fa-lg me-3 fa-fw mb-4" />
+                  <i className="fas fa-user fa-lg me-3 fa-fw" />
                   <input
                     type="email"
                     id="userId"
                     onChange={onEmailChange}
                     name="email"
-                    className="form-control mb-4"
+                    className="form-control"
                     placeholder="Enter Registered Email"
                     disabled={disabled}
                   />
                 </div>
 
-                <div className="form-outline d-flex align-items-center">
-                  <i className="fas fa-key fa-lg me-3 fa-fw mb-4" />
-                  <input
-                    type="password"
-                    id="userPass"
-                    onChange={onPassChange}
-                    name="password"
-                    className="form-control mb-4"
-                    placeholder="Enter password"
-                    disabled={disabled}
-                  />
-                </div>
-
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="form-check mb-0">
-                    <input
-                      className="form-check-input me-2"
-                      type="checkbox"
-                      onClick={(e) => setRemember(e.target.checked)}
-                      id="form2Example3"
-                      disabled={disabled}
-                    />
-                    <label className="form-check-label" htmlFor="form2Example3">
-                      Remember me
-                    </label>
-                  </div>
-
-                  <Link
-                    to="/forgot-password"
-                    className="btn btn-outline-light text-decoration-none py-1 lh-sm"
-                    disabled={disabled}
-                  >
-                    Forgot password
-                  </Link>
-                </div>
-
-                <div className="d-flex flex-column mt-4 pt-2 align-items-center">
+                <div
+                  className={`d-flex flex-column mt-3 pt-2 align-items-center`}
+                >
                   <button
                     type="submit"
                     className="btn btn-primary px-5"
                     onClick={(event) => handleSubmit(event)}
                     disabled={disabled}
                   >
-                    Login
+                    Get Password
                   </button>
-
-                  <p className="small fw-bold my-2 pt-1 mb-0">
-                    Don't have an account?
-                    <Link
-                      to="/register"
-                      className=" text-decoration-none px-2 fs-6"
-                      disabled={disabled}
-                    >
-                      Register
-                    </Link>
-                  </p>
                 </div>
               </form>
             </div>

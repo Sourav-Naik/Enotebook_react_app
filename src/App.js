@@ -6,6 +6,7 @@ import Home from "./Component/Home.js";
 import Notes from "./Component/Main.js";
 import OpenNote from "./Component/OpenNote.js";
 import NewNote from "./Component/NewNote.js";
+import Forgot from "./Component/forgot.js";
 function App() {
   return (
     <NoteState>
@@ -21,7 +22,7 @@ function App() {
                 <Route exact path="/open-note" element={<OpenNote />} />
                 <Route exact path="/newnote" element={<NewNote />} />
               </Route>
-
+              <Route exact path="/forgot-password" element={<Forgot />} />
               <Route exact path="/register" element={<Register />} />
             </Routes>
           </div>

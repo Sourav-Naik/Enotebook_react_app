@@ -3,6 +3,7 @@ import LogIn from "./LogIn";
 import Main from "./Main";
 
 export default function Home() {
-  let login = sessionStorage.getItem("loggedIn");
+  let login =
+    sessionStorage.getItem("loggedIn") || localStorage.getItem("loggedIn");
   return <>{login ? <Main /> : <LogIn />}</>;
 }

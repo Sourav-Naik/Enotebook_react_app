@@ -269,45 +269,65 @@ export default function Register() {
       });
       return Alert;
     }
-
-    setDisabled(false);
     // -------------------------post request-------------------------
     try {
+      setSpinner(true);
+      setAlert({
+        type: "success",
+        msg: "Validating Details",
+        display: "block",
+      });
       const formData = new FormData();
       formData.append("name", credentials.name);
       formData.append("email", credentials.email);
+      formData.append("googleLogin", false);
       formData.append("password", credentials.password);
       if (credentials.file) {
         formData.append("image", credentials.file);
       }
-      const response = await axios.post(
-        `http://localhost:5000/api/auth/createuser`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+
+      const emailVailidation = await axios.get(
+        `https://emailvalidation.abstractapi.com/v1/?api_key=${process.env.REACT_APP_API_KEY}&email=${credentials.email}`
       );
-      let msg = await response.data.msg;
-      setAlert({
-        type: "success",
-        msg: msg,
-        display: "block",
-      });
-      setTimeout(() => {
+      if (emailVailidation.data.is_smtp_valid.value) {
+        const response = await axios.post(
+          `http://localhost:5000/api/auth/createuser`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        let msg = await response.data.msg;
+        setSpinner(false);
         setAlert({
           type: "success",
-          msg: "Moving to Home Page",
+          msg: msg,
           display: "block",
         });
-        setSpinner(true);
-      }, 500);
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
+        setTimeout(() => {
+          setAlert({
+            type: "success",
+            msg: "Moving to Home Page",
+            display: "block",
+          });
+          setSpinner(true);
+        }, 500);
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
+      } else {
+        setSpinner(false);
+        setAlert({
+          type: "danger",
+          msg: "Invalid Email Account",
+          display: "block",
+        });
+      }
     } catch (error) {
       let msg = (await error.response.data.msg) || "Error occurred";
+      setSpinner(false);
       setAlert({
         type: "danger",
         msg: msg,
@@ -521,29 +541,34 @@ export default function Register() {
 
                       {/* -----------------alert-------------- */}
                       {Alert.display === "block" && (
-                        <div
-                          className={`d-flex flex-column align-items-center alert alert-${Alert.type} position-absolute bottom-50 w-100`}
-                          role="alert"
-                        >
-                          <div className="fs-4 mb-3 text-center">
-                            {Alert.msg}
-                          </div>
-                          {spinner ? (
-                            <div
-                              className="spinner-border text-success"
-                              role="status"
-                            />
-                          ) : (
-                            <div className="">
-                              <div
-                                className={`m-4 fa-solid fa-circle-${
-                                  Alert.type === "success" ? "check" : "xmark"
-                                } fa-2xl text-${Alert.type}`}
-                                style={{ fontSize: "50px", cursor: "pointer" }}
-                                onClick={handelAlert}
-                              />
+                        <div className="z-2 position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">
+                          <div
+                            className={`d-flex flex-column align-items-center alert alert-${Alert.type}`}
+                            role="alert"
+                          >
+                            <div className="fs-4 mb-3 text-center">
+                              {Alert.msg}
                             </div>
-                          )}
+                            {spinner ? (
+                              <div
+                                className="spinner-border text-success"
+                                role="status"
+                              />
+                            ) : (
+                              <div className="">
+                                <div
+                                  className={`m-4 fa-solid fa-circle-${
+                                    Alert.type === "success" ? "check" : "xmark"
+                                  } fa-2xl text-${Alert.type}`}
+                                  style={{
+                                    fontSize: "50px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={handelAlert}
+                                />
+                              </div>
+                            )}
+                          </div>
                         </div>
                       )}
                       {/* -----------------alert-------------- */}

@@ -29,7 +29,8 @@ export default function NewNote() {
   };
   const handelSave = async () => {
     setDisabled(true);
-    let token = sessionStorage.getItem("token");
+    let token =
+      sessionStorage.getItem("token") || localStorage.getItem("token");
     if (note.title.length <= 4) {
       setAlert({
         type: "danger",
@@ -167,7 +168,7 @@ export default function NewNote() {
       </button>
       {/* -----------------alert-------------- */}
       {Alert.display === "block" && (
-        <div className=" position-absolute bottom-50 start-0 end-0 d-flex justify-content-center">
+        <div className="z-2 position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">
           <div
             className={`d-flex flex-column align-items-center alert alert-${Alert.type}`}
             role="alert"

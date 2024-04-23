@@ -132,7 +132,8 @@ export default function Profile() {
         if (credentials.file) {
           formData.append("image", credentials.file);
         }
-        let token = sessionStorage.getItem("token");
+        let token =
+          sessionStorage.getItem("token") || localStorage.getItem("token");
         const response = await axios.post(
           `http://localhost:5000/api/auth/updateuser`,
           formData,
@@ -211,7 +212,7 @@ export default function Profile() {
       </div>
       {/* form----------------- */}
 
-      <div className="text-white mt-4 w-100">
+      <div className="text-white mt-4">
         <div className=" border rounded p-2 mx-1">
           <div className=" d-flex align-items-center">
             <i className="fas fa-user me-3 fa-fw fa-xl" />
@@ -260,7 +261,7 @@ export default function Profile() {
 
       {/* -----------------alert-------------- */}
       {Alert.display === "block" && (
-        <div className=" position-absolute bottom-50 start-0 end-0 d-flex justify-content-center">
+        <div className="z-2 position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">
           <div
             className={`d-flex flex-column align-items-center alert alert-${Alert.type}`}
             role="alert"

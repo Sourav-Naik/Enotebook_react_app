@@ -22,7 +22,7 @@ export default function NoteItem() {
 
   const handleDeleteNote = async (id) => {
     try {
-      const token = sessionStorage.getItem("token");
+      const token = sessionStorage.getItem("token")||localStorage.getItem("token");
       if (token) {
         const headers = { "auth-token": token };
         const response = await axios.delete(
