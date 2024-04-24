@@ -16,7 +16,7 @@ export default function Login() {
   const handelGoogleLogin = async (response) => {
     setSpinner(true);
     setDisabled(true);
-
+    setAlert({ type: "success", msg: "Validating Details", display: "block" });
     const googleCredentail = jwtDecode(response.credential);
     console.log(googleCredentail.email_verified);
 
