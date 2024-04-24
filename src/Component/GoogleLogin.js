@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import defaultProfilePic from "../Images/defaultProfilePic.jpg";
 
 export default function Login() {
   const [spinner, setSpinner] = useState(false);
@@ -48,7 +49,11 @@ export default function Login() {
           type: imageResponse.headers.get("content-type"),
         });
       } catch (error) {
-        file = "";
+        const response = await fetch(defaultProfilePic);
+        const blob = await response.blob();
+        file = new File([blob], "defaultProfilePic", {
+          type: "image/jpeg",
+        });
       }
 
       const user = error.response.data.user;
@@ -103,7 +108,11 @@ export default function Login() {
       } else {
         console.log("error");
         setSpinner(false);
-        setAlert({ type: "danger", msg: error.response.data.msg, display: "block" });
+        setAlert({
+          type: "danger",
+          msg: error.response.data.msg,
+          display: "block",
+        });
       }
     }
   };

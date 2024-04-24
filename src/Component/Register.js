@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import pic from "../Images/defaultProfilePic.jpg";
+import defaultProfilePic from "../Images/defaultProfilePic.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -19,7 +19,7 @@ export default function Register() {
     [showTerm, setShowTerm] = useState(false),
     [disabled, setDisabled] = useState(false),
     [showButton, setShowButton] = useState(false),
-    [previewURL, setPreviewURL] = useState(pic),
+    [previewURL, setPreviewURL] = useState(defaultProfilePic),
     [Alert, setAlert] = useState({
       type: "",
       msg: "",
@@ -157,7 +157,7 @@ export default function Register() {
     showButton ? setShowButton(false) : setShowButton(true);
   };
 
-  // ------------------edit-profile---------------------
+  // -------------------edit-profile-pic-----------------------
   const addPic = (event) => {
     const MAX_DIMENSION = 400; // Maximum width and height of the resized image
 
@@ -194,7 +194,6 @@ export default function Register() {
 
         const ctx = canvas.getContext("2d");
         ctx.drawImage(image, 0, 0, width, height);
-
         canvas.toBlob((blob) => {
           setPreviewURL(canvas.toDataURL("image/jpeg"));
           const resizedFile = new File([blob], file.name, {
@@ -212,6 +211,20 @@ export default function Register() {
 
     reader.readAsDataURL(file);
   };
+  //-----------------default-profil-pic---------------------
+  async function imageUrlToBlob(url) {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const image = new File([blob], "defaultProfilePic", {
+        type: "image/jpeg",
+      });
+      return image;
+    } catch (error) {
+      console.error({ Msg: "Set a Profile Pic", error });
+      return null;
+    }
+  }
 
   //-------------------------------------SignUp feature----------------------------
   const handelOnRegister = async (e) => {
@@ -284,12 +297,18 @@ export default function Register() {
       formData.append("password", credentials.password);
       if (credentials.file) {
         formData.append("image", credentials.file);
+      } else {
+        const response = await fetch(defaultProfilePic);
+        const blob = await response.blob();
+        const image = new File([blob], "defaultProfilePic", {
+          type: "image/jpeg",
+        });
+        formData.append("image", image);
       }
-
       const emailVailidation = await axios.get(
         `https://emailvalidation.abstractapi.com/v1/?api_key=${process.env.REACT_APP_API_KEY}&email=${credentials.email}`
       );
-      if (emailVailidation.data.is_smtp_valid.value) {
+      if (emailVailidation.data.is_smtp_valid.value === true) {
         const response = await axios.post(
           `http://localhost:5000/api/auth/createuser`,
           formData,
