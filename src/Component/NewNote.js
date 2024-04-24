@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function NewNote() {
   const navigate = useNavigate();
@@ -27,22 +27,35 @@ export default function NewNote() {
       setDisabled(false);
     }
   };
+
   const handelSave = async () => {
     setDisabled(true);
     let token =
       sessionStorage.getItem("token") || localStorage.getItem("token");
-    if (note.title.length <= 4) {
+    if (
+      note.title.length === 0 &&
+      note.description.length === 0 &&
+      note.content.length === 0
+    ) {
       setAlert({
         type: "danger",
-        msg: `Enter Valid Title`,
+        msg: `Can't save empty note`,
         display: "block",
       });
       return Alert;
     }
-    if (note.description.length <= 10) {
+    if (note.title.length <= 3) {
       setAlert({
         type: "danger",
-        msg: `Enter Valid Description`,
+        msg: `Title is Short`,
+        display: "block",
+      });
+      return Alert;
+    }
+    if (note.description.length <= 9) {
+      setAlert({
+        type: "danger",
+        msg: `Description is Short`,
         display: "block",
       });
       return Alert;
@@ -50,7 +63,7 @@ export default function NewNote() {
     if (note.content.length <= 0) {
       setAlert({
         type: "danger",
-        msg: `Enter Something in Content Area`,
+        msg: `Content Area Can't be Blank`,
         display: "block",
       });
       return Alert;
@@ -108,12 +121,13 @@ export default function NewNote() {
         <div className="row">
           <div className="col-sm-6 d-flex align-items-end mt-2">
             <label htmlFor="title" className="me-2 fs-5 lh-1">
-              Title
+              Title*
             </label>
             <input
               type="text"
               className="form-control py-1"
               id="title"
+              placeholder="Min length 4"
               value={note.title}
               onChange={handelTitle}
               disabled={disabled}
@@ -137,7 +151,7 @@ export default function NewNote() {
         <div className="d-flex w-100 flex-wrap">
           <div className="d-flex align-items-end mt-2">
             <label htmlFor="description" className="me-2 fs-5 lh-1">
-              Description
+              Description*
             </label>
           </div>
           <div className="col-10 mt-2">
@@ -145,6 +159,7 @@ export default function NewNote() {
               type="text"
               className="form-control py-1"
               id="description"
+              placeholder="Min length 10"
               value={note.description}
               onChange={handelDiscription}
               disabled={disabled}
@@ -154,18 +169,28 @@ export default function NewNote() {
         <textarea
           type="text"
           className="form-control mt-3 h-100"
+          placeholder="Required*"
           value={note.content}
           onChange={handelContent}
           disabled={disabled}
         />
       </div>
-      <button
-        className="btn btn-outline-light py-1 px-3 mt-2"
-        onClick={handelSave}
-        disabled={disabled}
-      >
-        Save
-      </button>
+      <div className="d-flex flex-wrap">
+        <Link
+          to="/notes"
+          className="btn btn-outline-light py-1 px-3 mt-2 text-decoration-none me-2"
+          disabled={disabled}
+        >
+          Go Back
+        </Link>
+        <button
+          className="btn btn-outline-light py-1 px-3 mt-2"
+          onClick={handelSave}
+          disabled={disabled}
+        >
+          Save And Exit
+        </button>
+      </div>
       {/* -----------------alert-------------- */}
       {Alert.display === "block" && (
         <div className="z-2 position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">

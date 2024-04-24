@@ -1,10 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 export default function OpenNote() {
   const location = useLocation();
   let noteState = location.state.note;
-
   const [spinner, setSpinner] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [Alert, setAlert] = useState({
@@ -33,18 +32,18 @@ export default function OpenNote() {
     setDisabled(true);
     let token =
       sessionStorage.getItem("token") || localStorage.getItem("token");
-    if (note.title.length <= 4) {
+    if (note.title.length <= 3) {
       setAlert({
         type: "danger",
-        msg: `Enter Valid Title`,
+        msg: `Title is Short`,
         display: "block",
       });
       return Alert;
     }
-    if (note.description.length <= 10) {
+    if (note.description.length <= 9) {
       setAlert({
         type: "danger",
-        msg: `Enter Valid Description`,
+        msg: `Description is Short`,
         display: "block",
       });
       return Alert;
@@ -52,7 +51,7 @@ export default function OpenNote() {
     if (note.content.length <= 0) {
       setAlert({
         type: "danger",
-        msg: `Enter Something in Content Area`,
+        msg: `Content Area Can't be Blank`,
         display: "block",
       });
       return Alert;
@@ -110,7 +109,7 @@ export default function OpenNote() {
         <div className="row">
           <div className="col-sm-6 d-flex align-items-end mt-2">
             <label htmlFor="title" className="me-2 fs-5 lh-1">
-              Title
+              Title*
             </label>
             <input
               type="text"
@@ -139,7 +138,7 @@ export default function OpenNote() {
         <div className="d-flex w-100 flex-wrap">
           <div className="d-flex align-items-end mt-2">
             <label htmlFor="description" className="me-2 fs-5 lh-1">
-              Description
+              Description*
             </label>
           </div>
           <div className="col-10 mt-2">
@@ -161,13 +160,22 @@ export default function OpenNote() {
           disabled={disabled}
         />
       </div>
-      <button
-        className="btn btn-outline-light py-1 px-3 mt-2"
-        onClick={handelSave}
-        disabled={disabled}
-      >
-        Save
-      </button>
+      <div className="d-flex flex-wrap">
+        <Link
+          to="/notes"
+          className="btn btn-outline-light py-1 px-3 mt-2 text-decoration-none me-2"
+          disabled={disabled}
+        >
+          Go Back
+        </Link>
+        <button
+          className="btn btn-outline-light py-1 px-3 mt-2"
+          onClick={handelSave}
+          disabled={disabled}
+        >
+          Save And Exit
+        </button>
+      </div>
       {/* -----------------alert-------------- */}
       {Alert.display === "block" && (
         <div className="z-2 position-absolute top-0 w-100 h-100 d-flex justify-content-center align-items-center">
